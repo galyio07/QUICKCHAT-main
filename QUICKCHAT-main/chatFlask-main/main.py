@@ -24,63 +24,61 @@ USERS_FILE = 'users.json'
        # print(f"Error saving users: {e}")
 
 @app.route('/')
-def index():
-    
+def zacetna():
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
-    
+def prijava():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        uporabnisko_ime = request.form.get('uporabnisko_ime')
+        geslo = request.form.get('geslo')
 
-        users = load_users()
+        uporabniki = nalozi_uporabnike()
 
-        if username in users and users[username]['password'] == password:
-            session['username'] = username
+        if uporabnisko_ime in uporabniki and uporabniki[uporabnisko_ime]['geslo'] == geslo:
+            session['uporabnisko_ime'] = uporabnisko_ime
             return redirect(url_for('menu'))
         else:
-            return render_template('login.html', error="Invalid credentials")
+            return render_template('login.html', napaka="Neveljavni podatki")
 
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
-def register():
-    """Handle user registration."""
+def registracija():
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+        uporabnisko_ime = request.form.get('uporabnisko_ime')
+        e_posta = request.form.get('e_posta')
+        geslo = request.form.get('geslo')
+        potrdi_geslo = request.form.get('potrdi_geslo')
 
-        if not all([username, email, password, confirm_password]):
-            return render_template('register.html', error="All fields are required")
+        if not all([uporabnisko_ime, e_posta, geslo, potrdi_geslo]):
+            return render_template('register.html', napaka="Vsa polja so obvezna")
 
-        if password != confirm_password:
-            return render_template('register.html', error="Passwords do not match")
+        if geslo != potrdi_geslo:
+            return render_template('register.html', napaka="Gesli se ne ujemata")
 
-        users = load_users()
+        uporabniki = nalozi_uporabnike()
 
-        if username in users:
-            return render_template('register.html', error="Username already exists")
+        if uporabnisko_ime in uporabniki:
+            return render_template('register.html', napaka="Uporabniško ime že obstaja")
 
-        users[username] = {
-            'email': email,
-            'password': password  
+        uporabniki[uporabnisko_ime] = {
+            'e_posta': e_posta,
+            'geslo': geslo  
         }
 
-        save_users(users)
+        shrani_uporabnike(uporabniki)
         return redirect(url_for('login'))
 
     return render_template('register.html')
 
+
 @app.route('/menu')
-def menu():
-    """Display menu page."""
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    return render_template('menu.html', username=session['username'])
+def meni():
+    if 'uporabnisko_ime' not in session:
+        return redirect(url_for('prijava'))
+    return render_template('menu.html', uporabnisko_ime=session['uporabnisko_ime'])
+
 
 @app.route('/logout')
 def logout():
