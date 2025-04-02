@@ -82,14 +82,14 @@ def meni():
 
 @app.route('/logout')
 def logout():
-    """Handle user logout."""
-    session.pop('username', None)
+   
+    session.pop('uporabnisko_ime', None)
     return redirect(url_for('login'))
 
 @app.route('/lawyer/<specialty>')
 def lawyer_chat(specialty):
-    """Route for lawyer-specific chat."""
-    if 'username' not in session:
+    
+    if 'uporabnisko_ime' not in session:
         return redirect(url_for('login'))
     return render_template('lawyer_chat.html', specialty=specialty)
 
