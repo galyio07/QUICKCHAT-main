@@ -1,43 +1,36 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import json
-import os
-import secrets  # For generating a more secure secret key
 
 app = Flask(__name__)
-
-# Generate a secure secret key
 app.secret_key = secrets.token_hex(16)
-
-# Path to store user data
 USERS_FILE = 'users.json'
 
-def load_users():
-    """Load users from JSON file."""
-    try:
-        if not os.path.exists(USERS_FILE):
-            return {}
-        with open(USERS_FILE, 'r') as f:
-            return json.load(f)
-    except (json.JSONDecodeError, IOError) as e:
-        print(f"Error loading users: {e}")
-        return {}
+#def load_users():
+   # try:
+       #if not os.path.exists(USERS_FILE):
+           # return {}
+        #with open(USERS_FILE, 'r') as f:
+            #return json.load(f)
+    #except (json.JSONDecodeError, IOError) as e:
+       # print(f"Error loading users: {e}")
+        #return {}
 
-def save_users(users):
-    """Save users to JSON file."""
-    try:
-        with open(USERS_FILE, 'w') as f:
-            json.dump(users, f, indent=4)
-    except IOError as e:
-        print(f"Error saving users: {e}")
+#def save_users(users):
+    
+   # try:
+        #ith open(USERS_FILE, 'w') as f:
+           # json.dump(users, f, indent=4)
+    #except IOError as e:
+       # print(f"Error saving users: {e}")
 
 @app.route('/')
 def index():
-    """Redirect to login page."""
+    
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Handle user login."""
+    
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -61,7 +54,6 @@ def register():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        # Enhanced validation
         if not all([username, email, password, confirm_password]):
             return render_template('register.html', error="All fields are required")
 
@@ -73,10 +65,9 @@ def register():
         if username in users:
             return render_template('register.html', error="Username already exists")
 
-        # Save new user (Note: In production, use password hashing)
         users[username] = {
             'email': email,
-            'password': password  # In real app, use secure password hashing
+            'password': password  
         }
 
         save_users(users)
