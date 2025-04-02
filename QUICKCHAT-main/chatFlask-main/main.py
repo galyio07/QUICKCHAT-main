@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import json
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
-USERS_FILE = 'users.json'
+app.secret_key = "skrivni_kljuc_123"
 
 #def load_users():
    # try:
